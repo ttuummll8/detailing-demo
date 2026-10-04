@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Блик — детейлинг-студия в Караганде</title>
+  <meta name="description" content="Детейлинг кузова и салона в Караганде. Цена сразу, запись в свободное окно, заявка в WhatsApp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #171717;
+      --border: rgba(255, 255, 255, .1);
+      --card-border: rgba(255, 255, 255, .08);
+      --text: #f5f5f5;
+      --muted: #a3a3a3;
+      --accent: #e5e5e5;
+      --accent-light: #9ca3af;
+      --metal: linear-gradient(135deg, #8a8a8a, #c0c0c0, #8a8a8a);
+      --glow: 0 0 18px rgba(192, 192, 192, .38);
+      --shadow: 0 12px 28px rgba(0, 0, 0, .32);
+      --bar-h: 76px;
+      --space: 64px;
+      --fs-h1: clamp(32px, 5vw, 64px);
+      --fs-h2: clamp(28px, 3.6vw, 48px);
+      --fs-body: 1rem;
+      --fs-small: .82rem;
+      --ease: .2s ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; color-scheme: dark; }
+    body {
+      margin: 0;
+      font-family: Onest, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: calc(var(--bar-h) + 12px);
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      pointer-events: none;
+      opacity: .035;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    }
+    h1, h2, h3, .logo {
+      font-family: Unbounded, system-ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+    }
+    h1 { font-size: var(--fs-h1); margin: 0 0 12px; }
+    h2 { font-size: var(--fs-h2); margin: 0 0 8px; color: var(--text); }
+    h3 { font-size: 1.125rem; margin: 0 0 8px; }
+    p { margin: 0 0 12px; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent-light); outline-offset: 3px; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin-inline: auto; }
+    .top-banner { background: #141414; border-bottom: 1px solid var(--border); text-align: center; font-size: .82rem; font-weight: 500; padding: 8px 16px; color: var(--text); }
+    .header { position: sticky; top: 0; z-index: 40; background: rgba(10, 10, 10, .92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .header-inner { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .logo { font-size: 1.05rem; white-space: nowrap; }
+    .logo small { display: block; font-family: Onest, system-ui, sans-serif; font-size: .68rem; font-weight: 500; color: var(--muted); margin-top: 2px; }
+    .nav { display: none; gap: 18px; font-weight: 500; font-size: .92rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 10px 18px; border: 1px solid var(--border); border-radius: 12px; background: transparent; color: var(--text); cursor: pointer; font-weight: 600; transition: transform var(--ease), background var(--ease), border-color var(--ease), box-shadow var(--ease), filter var(--ease); }
+    .btn-primary { background: #e5e5e5; border-color: #d4d4d4; color: #0a0a0a; }
+    .btn-primary:hover { background: #ffffff; color: #0a0a0a; }
+    .btn-glow { box-shadow: var(--glow); }
+    .btn-wait { background: #2a2a2a; border-color: #3a3a3a; color: #c4c4c4; box-shadow: none; }
+    .btn-wait:hover { background: #2a2a2a; color: #c4c4c4; }
+    .btn:active, .choice:active, .addon:active, .chip:not(:disabled):active, .plan:active { transform: scale(.98); }
+    .menu-toggle { display: inline-flex; background: var(--card); }
+    .mobile-nav { display: none; flex-direction: column; gap: 4px; padding: 0 16px 14px; border-top: 1px solid var(--border); }
+    .mobile-nav.is-open { display: flex; }
+    .mobile-nav a { min-height: 44px; display: flex; align-items: center; font-weight: 500; }
+    section { padding: var(--space) 0; }
+    .lead { color: var(--muted); max-width: 46ch; }
+    .hero {
+      padding: var(--space) 0;
+      background:
+        radial-gradient(ellipse 80% 55% at 10% 0%, rgba(255,255,255,.07), transparent 58%),
+        radial-gradient(ellipse 50% 40% at 100% 80%, rgba(192,192,192,.05), transparent 60%),
+        #0a0a0a;
+    }
+    .hero-grid { display: grid; gap: 28px; }
+    .hero-kicker { color: var(--muted); font-weight: 500; font-size: .88rem; margin-bottom: 10px; }
+    .plus-list { list-style: none; padding: 0; margin: 20px 0 24px; display: grid; gap: 10px; }
+    .plus-list li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); }
+    .plus-mark { width: 28px; height: 28px; border-radius: 8px; background: #262626; color: var(--text); display: grid; place-items: center; font-weight: 600; }
+    .plus-list strong { display: block; }
+    .plus-list span { color: var(--muted); font-size: .9rem; }
+    .photo-ph { background: var(--card); border: 1px solid var(--border); border-radius: 14px; aspect-ratio: 16 / 9; color: var(--muted); font-size: var(--fs-small); text-align: center; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .photo-ph::before { content: ""; width: 48px; height: 48px; border-radius: 10px; margin-bottom: 8px; background: #3a3a3a; flex: 0 0 auto; }
+    .hero .photo-ph { background: #171717; }
+    .works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+    .works-grid .photo-ph { aspect-ratio: 4 / 3; }
+    .works-grid .photo-ph:nth-child(1)::before { background: #3f3f3f; }
+    .works-grid .photo-ph:nth-child(2)::before { background: #2a2a2a; }
+    .works-grid .photo-ph:nth-child(3)::before { background: #4a4a4a; }
+    .works-grid .photo-ph:nth-child(4)::before { background: #1f1f1f; }
+    .booking { background: radial-gradient(ellipse 70% 45% at 80% 0%, rgba(255,255,255,.06), transparent 60%), #0a0a0a; border-block: 1px solid var(--border); }
+    .booking-layout { display: grid; gap: var(--space); }
+    .step-kicker { margin: var(--space) 0 8px; font-weight: 600; font-size: var(--fs-small); color: var(--muted); }
+    .progress { height: 4px; border-radius: 99px; background: rgba(255,255,255,.12); overflow: hidden; margin-bottom: 14px; }
+    .progress > span { display: block; height: 100%; width: 0; background: var(--metal); transition: width .35s ease; }
+    .stepper { list-style: none; display: flex; gap: 0; margin: 0 0 var(--space); padding: 0; }
+    .stepper li { flex: 1; min-width: 0; position: relative; }
+    .stepper li:not(:last-child)::after { content: ""; position: absolute; top: 15px; left: calc(50% + 16px); right: calc(-50% + 16px); height: 2px; background: rgba(255,255,255,.12); }
+    .stepper li.is-done:not(:last-child)::after { background: #c0c0c0; }
+    .stepper button { width: 100%; min-height: 44px; border: 0; background: transparent; padding: 0 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .stepper .dot { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); display: grid; place-items: center; font-size: .8rem; font-weight: 600; position: relative; z-index: 1; transition: background var(--ease), border-color var(--ease), box-shadow var(--ease), color var(--ease); }
+    .stepper .step-name { font-size: .68rem; color: var(--muted); line-height: 1.2; }
+    .stepper li.is-current .dot { background: #e5e5e5; border-color: #e5e5e5; color: #0a0a0a; box-shadow: var(--glow); }
+    .stepper li.is-current .step-name { color: var(--text); }
+    .stepper li.is-done .dot { background: #262626; border-color: #9ca3af; color: #e5e5e5; }
+    .step { margin-top: var(--space); scroll-margin-top: 88px; }
+    .step-title { margin-bottom: 12px; }
+    .grid-cards { display: grid; gap: 10px; }
+    .choice, .addon { text-align: left; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; width: 100%; min-height: 44px; box-shadow: var(--shadow); transition: border-color var(--ease), box-shadow var(--ease), transform var(--ease), background var(--ease); transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--lift, 0px) + var(--reveal-y, 0px)), 0) scale(var(--reveal-s, 1)); }
+    .choice.is-selected, .addon.is-selected { border-color: #9ca3af; box-shadow: var(--glow), var(--shadow); background: #1f1f1f; }
+    .chip.is-selected { background: #e5e5e5; border-color: #e5e5e5; color: #0a0a0a; box-shadow: var(--glow); }
+    .choice-art { display: flex; align-items: center; justify-content: center; height: 72px; border-radius: 10px; background: #222; margin-bottom: 10px; color: #c0c0c0; }
+    .choice.is-selected .choice-art { background: #2c2c2c; color: #f5f5f5; }
+    .muted { color: var(--muted); font-size: .88rem; }
+    .chip.is-selected small { color: rgba(10, 10, 10, .72); }
+    .price-from { font-weight: 600; margin-top: 6px; }
+    .includes { margin: 12px 0 0; padding-left: 18px; color: var(--muted); font-size: .9rem; }
+    .addon { display: grid; gap: 6px; }
+    .addon-top { display: flex; justify-content: space-between; gap: 12px; }
+    .addon-fit { font-size: .86rem; color: var(--muted); }
+    .days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .times { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .chip { min-height: 48px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); padding: 8px 10px; transition: transform var(--ease), border-color var(--ease), background var(--ease), box-shadow var(--ease); }
+    .days .chip { flex: 0 0 auto; }
+    .chip small { display: block; color: var(--muted); font-size: .72rem; font-weight: 400; }
+    .chip:disabled { opacity: 1; background: #111111; color: #8d8d8d; border-color: rgba(255,255,255,.06); cursor: not-allowed; }
+    .chip:disabled small { color: #8d8d8d; }
+    .hint { color: var(--muted); font-size: .88rem; margin-top: 8px; }
+    .fields { display: grid; gap: 10px; margin-top: 8px; }
+    label.field { display: grid; gap: 6px; font-weight: 500; }
+    input[type="text"], input[type="tel"] { min-height: 48px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); padding: 0 14px; }
+    .error { color: #ffb4b4; font-size: .88rem; min-height: 1.2em; }
+    .sticky-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: #0a0a0a; border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+    .sticky-inner { width: min(1120px, 100%); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .sticky-meta { font-size: .82rem; color: var(--muted); }
+    .sticky-price { font-weight: 600; font-size: 1.05rem; }
+    .note-tiny { font-size: .75rem; color: var(--muted); }
+    .size-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 18px; }
+    .plans { display: grid; gap: 10px; }
+    .plan { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--lift, 0px) + var(--reveal-y, 0px)), 0) scale(var(--reveal-s, 1)); transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease); }
+    .plan-save { color: var(--text); font-weight: 600; font-size: .9rem; }
+    .plan-price { font-size: 1.35rem; font-family: Unbounded, system-ui, sans-serif; margin: 8px 0 4px; }
+    .plan-old { color: var(--muted); text-decoration: line-through; font-size: .9rem; }
+    .why-grid { display: grid; gap: 10px; margin-top: 18px; }
+    .why-item { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--lift, 0px) + var(--reveal-y, 0px)), 0) scale(var(--reveal-s, 1)); transition: transform var(--ease), box-shadow var(--ease); }
+    .why-item p { color: var(--muted); margin: 0; }
+    .faq-group { margin-top: var(--space); }
+    .acc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+    .acc-btn { width: 100%; min-height: 48px; border: 0; background: transparent; text-align: left; padding: 12px 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+    .acc-btn::after { content: "+"; margin-left: auto; color: var(--text); font-weight: 600; }
+    .acc.is-open .acc-btn::after { content: "\2013"; }
+    .acc-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+    .acc.is-open .acc-panel { grid-template-rows: 1fr; }
+    .acc-panel > div { overflow: hidden; }
+    .acc-panel p { color: var(--muted); margin: 0; padding: 0 14px 14px; }
+    footer { padding: var(--space) 0; border-top: 1px solid var(--border); }
+    .quote-side { display: none; }
+    .quote-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; display: grid; gap: 8px; box-shadow: var(--shadow); }
+    .quote-card .btn { width: 100%; }
+    .reveal { opacity: 0; --reveal-y: 30px; --reveal-s: 1; }
+    .reveal.visible { opacity: 1; --reveal-y: 0px; }
+    .reveal.settled { will-change: auto; }
+    h2.reveal, h3.reveal, .acc.reveal, .stat-xl.reveal { transform: translateY(var(--reveal-y)); transition: opacity .45s ease, transform .45s ease; }
+    .choice.reveal, .why-item.reveal, .works-grid .photo-ph.reveal { transition: opacity .45s ease, transform .45s ease, border-color var(--ease), box-shadow var(--ease), background var(--ease); }
+    .works-grid .photo-ph.reveal { --reveal-s: .95; }
+    .works-grid .photo-ph.reveal.visible { --reveal-s: 1; }
+    .why-grid .why-item.visible:nth-child(2) { transition-delay: .1s; }
+    .why-grid .why-item.visible:nth-child(3) { transition-delay: .2s; }
+    .why-grid .why-item.visible:nth-child(4) { transition-delay: .3s; }
+    #packageCards .choice.visible:nth-child(2) { transition-delay: .1s; }
+    .photo-ph { box-shadow: var(--shadow); transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--lift, 0px) + var(--reveal-y, 0px)), 0) scale(var(--reveal-s, 1)); transition: transform var(--ease), box-shadow var(--ease); }
+    @media (hover: hover) and (pointer: fine) {
+      .btn:not(.btn-wait):hover, .chip:not(:disabled):hover, .acc-btn:hover { transform: translateY(-4px); }
+      .choice:hover, .addon:hover, .plan:hover, .why-item:hover, .photo-ph:hover { --lift: -4px; box-shadow: 0 18px 36px rgba(0, 0, 0, .4); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; --reveal-y: 0px; --reveal-s: 1; transition: none; will-change: auto; }
+      .count.is-counting { animation: none; }
+      .acc-panel, .btn, .choice, .addon, .chip, .progress > span, .plan, .why-item, .photo-ph { transition: none; }
+      section + section::before { animation: none; }
+    }
+    .foot-grid { display: grid; gap: 18px; }
+    .foot-grid p, .foot-grid a { color: var(--muted); }
+    .copy { margin-top: 24px; font-size: .82rem; color: var(--muted); }
+    .eyebrow { margin: 0 0 10px; font-size: .75rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+    .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 22px 0 8px; }
+    .facts p { margin: 0; background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
+    .facts .count { display: block; font-family: Unbounded, system-ui, sans-serif; font-size: clamp(28px, 4vw, 42px); line-height: 1; color: var(--text); }
+    @property --n { syntax: "<integer>"; inherits: false; initial-value: 0; }
+    .count { --n: 0; --num: 0; counter-reset: stat var(--n); }
+    .count::before { content: counter(stat); }
+    .count.is-counting { animation: countUp 1.2s ease-out forwards; }
+    .stat-xl .count { display: inline-block; transform-origin: center left; }
+    .stat-xl .count.is-counting { animation: countUp 1.2s ease-out forwards, metalPulse 1.2s ease; }
+    .count.plain::before { content: none; }
+    @keyframes countUp { from { --n: 0; } to { --n: var(--num); } }
+    @keyframes metalPulse { 0% { transform: scale(1) rotate(0deg); } 35% { transform: scale(1.06) rotate(-1.2deg); } 70% { transform: scale(.98) rotate(.6deg); } 100% { transform: scale(1) rotate(0deg); } }
+    .facts small { color: var(--muted); font-size: .75rem; }
+    .split { display: grid; gap: 28px; align-items: end; }
+    .stat-xl { margin: 10px 0 8px; font-family: Unbounded, system-ui, sans-serif; font-size: clamp(56px, 8vw, 104px); line-height: .85; letter-spacing: -.04em; }
+    .stat-xl small { font-size: .42em; margin-left: 4px; }
+    .wrap-wide { width: min(1280px, calc(100% - 20px)); margin-inline: auto; }
+    .wrap-narrow { width: min(760px, calc(100% - 32px)); }
+    .band-light {
+      background: #f5f5f5;
+      color: #1a1a1a;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --border: rgba(0, 0, 0, .1);
+      --card-border: rgba(0, 0, 0, .1);
+      --shadow: 0 14px 30px rgba(0, 0, 0, .08);
+    }
+    .band-light .photo-ph { background: #171717; color: #f5f5f5; border-color: rgba(255,255,255,.08); }
+    #pass, #why {
+      background:
+        radial-gradient(ellipse 60% 50% at 100% 10%, rgba(255,255,255,.05), transparent 55%),
+        #0a0a0a;
+    }
+    section + section { position: relative; }
+    section + section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 8%; right: 8%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(192,192,192,.9), transparent);
+      background-size: 28% 100%;
+      background-repeat: no-repeat;
+      animation: sweep 3.2s ease-in-out infinite;
+    }
+    section.band-light::before { background-image: linear-gradient(90deg, transparent, rgba(0,0,0,.45), transparent); }
+    @keyframes sweep { from { background-position: -20% 0; } to { background-position: 120% 0; } }
+    @media (min-width: 720px) {
+      .nav { display: flex; }
+      .menu-toggle { display: none; }
+      .hero-grid { grid-template-columns: 1.15fr .85fr; align-items: center; }
+      .grid-cards { grid-template-columns: 1fr 1fr; }
+      .packages { grid-template-columns: 1fr 1fr; }
+      .times { grid-template-columns: repeat(4, 1fr); }
+      .split { grid-template-columns: .85fr 1.15fr; align-items: start; }
+      .pass-split { grid-template-columns: .7fr 1.3fr; }
+      .works-grid { grid-template-columns: 1.45fr 1fr 1fr; grid-template-rows: 200px 200px; }
+      .works-grid .photo-ph:nth-child(1) { grid-row: 1 / span 2; aspect-ratio: auto; height: 100%; }
+      .works-grid .photo-ph:nth-child(4) { grid-column: 2 / span 2; }
+      .plans { grid-template-columns: repeat(3, 1fr); }
+      .pass-split .plans { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .foot-grid { grid-template-columns: 1.2fr 1fr 1fr; }
+      .fields { grid-template-columns: 1fr 1fr auto; align-items: end; }
+    }
+    @media (min-width: 960px) {
+      .addons { grid-template-columns: 1fr 1fr; }
+      .booking-layout { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; }
+      .quote-side { display: block; position: sticky; top: 88px; }
+      .sticky-bar { display: none; }
+      body { padding-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-banner">Абонемент: экономия до 20% на каждом визите</div>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="logo" href="#top">Блик<small>детейлинг · Караганда</small></a>
+      <nav class="nav" aria-label="Разделы">
+        <a href="#prices">Цены</a>
+        <a href="#pass">Абонемент</a>
+        <a href="#faq">Вопросы</a>
+      </nav>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a class="btn btn-primary" href="#prices">Записаться</a>
+        <button class="btn menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" id="menuBtn">Меню</button>
+      </div>
+    </div>
+    <nav class="mobile-nav wrap" id="mobile-nav" hidden>
+      <a href="#prices">Цены</a>
+      <a href="#pass">Абонемент</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="hero-kicker">Караганда · кузов и салон</p>
+          <h1>Чистый авто без сюрпризов по цене</h1>
+          <p class="lead">Считаете пакет на сайте, выбираете свободное окно и отправляете заявку мастеру в WhatsApp. Итог подтверждается после осмотра.</p>
+          <ul class="plus-list">
+            <li><span class="plus-mark" aria-hidden="true">1</span><div><strong>Цена сразу</strong><span>Видите ориентир от суммы до звонка</span></div></li>
+            <li><span class="plus-mark" aria-hidden="true">2</span><div><strong>Свободные окна онлайн</strong><span>Слоты учитывают длительность выбранных услуг</span></div></li>
+            <li><span class="plus-mark" aria-hidden="true">3</span><div><strong>Заявка в WhatsApp</strong><span>Готовый текст: авто, услуги, время и контакты</span></div></li>
+          </ul>
+          <div class="facts" aria-label="Параметры записи">
+            <p><span class="count" data-key="hours">0</span><small>часов открыты</small></p>
+            <p><span class="count" data-key="days">0</span><small>дней для записи</small></p>
+            <p><span class="count" data-key="off">0</span><small>% макс. скидка</small></p>
+          </div>
+          <a class="btn btn-primary btn-glow" href="#prices">Рассчитать и записаться</a>
+        </div>
+        <div class="photo-ph" role="img" aria-label="Заглушка фото студии">здесь будет фото</div>
+      </div>
+    </section>
+    <section class="band-light" id="works">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">Портфолио</p>
+          <h2 class="reveal">Наши работы</h2>
+        </div>
+        <p class="lead">Примеры кузова и салона после комплекса. Фото добавим на место цветных блоков.</p>
+      </div>
+      <div class="wrap-wide">
+        <div class="works-grid">
+          <div class="photo-ph reveal">здесь будет фото</div>
+          <div class="photo-ph reveal">здесь будет фото</div>
+          <div class="photo-ph reveal">здесь будет фото</div>
+          <div class="photo-ph reveal">здесь будет фото</div>
+        </div>
+      </div>
+    </section>
+    <section class="booking" id="prices">
+      <div class="wrap booking-layout">
+        <div>
+          <h2 class="reveal">Цены и запись</h2>
+          <p class="lead">Выберите размер авто, пакет и допы. Цена на сайте — ориентир «от», мастер подтвердит после осмотра.</p>
+          <p class="step-kicker" id="stepKicker">Шаг 1 из 5</p>
+          <div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+          <ol class="stepper" id="stepper">
+            <li data-step="1"><button type="button"><span class="dot">1</span><span class="step-name">Размер</span></button></li>
+            <li data-step="2"><button type="button"><span class="dot">2</span><span class="step-name">Пакет</span></button></li>
+            <li data-step="3"><button type="button"><span class="dot">3</span><span class="step-name">Допы</span></button></li>
+            <li data-step="4"><button type="button"><span class="dot">4</span><span class="step-name">Время</span></button></li>
+            <li data-step="5"><button type="button"><span class="dot">5</span><span class="step-name">Контакты</span></button></li>
+          </ol>
+          <div class="step" data-step="1" id="stepSize"><h3 class="step-title reveal">Размер автомобиля</h3><div class="grid-cards" id="sizeCards"></div></div>
+          <div class="step" data-step="2" id="stepPack"><h3 class="step-title reveal">Пакет</h3><div class="grid-cards packages" id="packageCards"></div><ul class="includes" id="packageIncludes"></ul></div>
+          <div class="step" data-step="3" id="stepAdd"><h3 class="step-title reveal">Дополнительно</h3><div class="grid-cards addons" id="addonCards"></div></div>
+          <div class="step" data-step="4" id="stepWhen"><h3 class="step-title reveal">Дата и время</h3><div class="days" id="dayChips" role="tablist"></div><p class="hint" id="slotsHint"></p><div class="times" id="timeChips" style="margin-top:10px"></div></div>
+          <div class="step" data-step="5" id="stepContact">
+            <h3 class="step-title reveal">Контакты</h3>
+            <div class="fields">
+              <label class="field">Имя<input id="nameInput" type="text" autocomplete="name" placeholder="Как к вам обращаться" /></label>
+              <label class="field">Телефон<input id="phoneInput" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 7XX XXX XX XX" /></label>
+              <button class="btn btn-wait" type="button" id="submitBtn">Записаться</button>
+            </div>
+            <p class="error" id="formError" role="alert"></p>
+          </div>
+        </div>
+        <aside class="quote-side" aria-label="Итог записи">
+          <div class="quote-card">
+            <p class="muted" style="margin:0">Ориентир</p>
+            <div class="sticky-price" id="sidePrice">от 0</div>
+            <div class="sticky-meta" id="sideMeta">выберите услуги</div>
+            <p class="note-tiny" style="margin:0">Итог подтвердит мастер после осмотра</p>
+            <button class="btn btn-wait" type="button" id="sideBtn">Записаться</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section id="pass">
+      <div class="wrap split pass-split">
+        <div>
+          <p class="eyebrow">Ритм визитов</p>
+          <h2 class="reveal">Абонемент</h2>
+          <p class="stat-xl reveal"><span class="count" data-key="off">0</span><small>%</small></p>
+          <p class="lead">Фиксируем цену визита на выбранный ритм. Скидка считается от ориентира пакета «Комплекс» для вашего размера авто.</p>
+        </div>
+        <div>
+          <div class="size-switch" id="passSizeSwitch"></div>
+          <div class="plans" id="passPlans"></div>
+        </div>
+      </div>
+    </section>
+    <section id="why">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">Как устроена запись</p>
+          <h2 class="reveal">Почему мы</h2>
+          <p class="lead">Цена, окно и заявка собираются на одной странице — без отдельного прайса и переписки по кругу.</p>
+        </div>
+        <div class="why-grid">
+          <article class="why-item reveal"><h3>Считаете до визита</h3><p>Пакет, допы и длительность видны сразу. Не держим цену после мойки.</p></article>
+          <article class="why-item reveal"><h3>Окно под фактическое время</h3><p>Занятые слоты закрыты. Свободные считаются по сумме длительностей услуг.</p></article>
+          <article class="why-item reveal"><h3>Одна заявка в WhatsApp</h3><p>Мастер получает состав работ, желаемое время и телефон без повторных уточнений.</p></article>
+          <article class="why-item reveal"><h3>Караганда, понятный адрес</h3><p>Студия в городе, часы работы в подвале. Можно приехать после работы.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="band-light" id="faq">
+      <div class="wrap wrap-narrow">
+        <h2 class="reveal">Вопросы и ответы</h2>
+        <div class="faq-group">
+          <h3>Общие</h3>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Нужно записываться заранее?</button><div class="acc-panel"><div><p>Да. Выберите свободное окно на ближайшие 7 дней и отправьте заявку. Если слот займут, мастер напишет в WhatsApp.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Можно приехать без записи?</button><div class="acc-panel"><div><p>Только если в этот час нет других авто. Надёжнее выбрать окно на сайте.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Что взять с собой?</button><div class="acc-panel"><div><p>Ключи и телефон, на который придёт подтверждение. Личные вещи лучше забрать из салона.</p></div></div></div>
+        </div>
+        <div class="faq-group">
+          <h3>Качество</h3>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Чем комплекс отличается от мойки?</button><div class="acc-panel"><div><p>Комплекс включает мойку кузова, уход за пластиком и резиной, пылесос и влажную уборку салона. Химчистка и защита — отдельные допы.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Выводите ли сложные пятна?</button><div class="acc-panel"><div><p>Пробуем на локальном участке. Если риск повреждения ткани высокий, скажем до начала работы.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Есть ли гарантия на покрытие?</button><div class="acc-panel"><div><p>Срок и условия зависят от выбранной защиты и состояния ЛКП. Мастер фиксирует это в заявке после осмотра.</p></div></div></div>
+        </div>
+        <div class="faq-group">
+          <h3>Абонемент</h3>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Как считается скидка?</button><div class="acc-panel"><div><p>От ориентира пакета «Комплекс» для вашего размера авто. Чем чаще визит, тем ниже цена за заезд.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Можно ли перенести визит?</button><div class="acc-panel"><div><p>Да, предупредите за сутки. Неиспользованный заезд сгорает, если молча пропустить окно.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Абонемент на два авто?</button><div class="acc-panel"><div><p>Нет, один тариф — один автомобиль. Для второго авто оформляется отдельно.</p></div></div></div>
+        </div>
+        <div class="faq-group">
+          <h3>Оплата</h3>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Чем можно оплатить?</button><div class="acc-panel"><div><p>Наличные и перевод. Карта — уточните у мастера в переписке, терминал не всегда на месте.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Почему на сайте написано от?</button><div class="acc-panel"><div><p>Итог зависит от загрязнения и состояния покрытия. Цифра на экране — нижняя граница выбранного набора услуг.</p></div></div></div>
+          <div class="acc reveal"><button type="button" class="acc-btn" aria-expanded="false">Нужна предоплата?</button><div class="acc-panel"><div><p>Для обычной записи нет. Для длинных защитных работ мастер может попросить бронь в переписке.</p></div></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap foot-grid">
+      <div><a class="logo" href="#top">Блик</a><p>Детейлинг-студия в Караганде. Кузов, салон, защита. Запись через форму выше.</p></div>
+      <div><h3>Контакты</h3><p id="footerPhone"></p><p id="footerWhatsapp"></p><p id="footerAddress"></p></div>
+      <div><h3>Часы работы</h3><p id="footerHours"></p></div>
+    </div>
+    <div class="wrap copy">Демо-страница. Цена на сайте — ориентир, итог подтверждает мастер после осмотра.</div>
+  </footer>
+  <div class="sticky-bar" aria-live="polite">
+    <div class="sticky-inner">
+      <div>
+        <div class="sticky-price" id="barPrice">от 0</div>
+        <div class="sticky-meta" id="barMeta">выберите услуги</div>
+        <div class="note-tiny">Итог подтвердит мастер после осмотра</div>
+      </div>
+      <button class="btn btn-wait" type="button" id="barBtn">Записаться</button>
+    </div>
+  </div>
+  <script>
+    /* Все настройки бизнеса. Остальной код только читает этот объект. */
+    const CONFIG = {
+      studioName: "Блик",
+      city: "Караганда",
+      whatsapp: "77011234567",
+      phoneDisplay: "+7 701 123 45 67",
+      address: "Караганда, ул. Ермекова, 12, бокс 3",
+      hours: { label: "ежедневно 10:00-20:00", start: "10:00", end: "20:00", slotStepMin: 30 },
+      sizes: [
+        { id: "sedan", title: "Седан", examples: "Camry, K5, Elantra, Octavia" },
+        { id: "crossover", title: "Кроссовер", examples: "RAV4, Tucson, Sportage, CX-5" },
+        { id: "suv", title: "Внедорожник", examples: "Land Cruiser, Patrol, Tahoe" },
+        { id: "minivan", title: "Минивэн", examples: "Alphard, Carnival, Staria" }
+      ],
+      packages: [
+        {
+          id: "complex", title: "Комплекс",
+          includes: ["Бесконтактная мойка и сушка кузова", "Уход за резиной и наружным пластиком", "Пылесос салона, ковры, багажник", "Влажная уборка пластика внутри", "Протирка стекол изнутри"],
+          priceFrom: { sedan: 18000, crossover: 22000, suv: 28000, minivan: 30000 },
+          durationMin: { sedan: 150, crossover: 180, suv: 210, minivan: 230 }
+        },
+        {
+          id: "interior", title: "Только салон",
+          includes: ["Пылесос салона, сидений и багажника", "Влажная уборка пластика и дверей", "Очистка стекол изнутри", "Ковры: вынос и мойка"],
+          priceFrom: { sedan: 12000, crossover: 15000, suv: 18000, minivan: 20000 },
+          durationMin: { sedan: 90, crossover: 110, suv: 130, minivan: 150 }
+        }
+      ],
+      addons: [
+        { id: "seats", title: "Химчистка сидений", priceFrom: 9000, durationMin: 70, fit: "Подходит, если на ткани есть пятна, запах или следы от детского кресла." },
+        { id: "engine", title: "Мойка моторного отсека", priceFrom: 4500, durationMin: 35, fit: "Подходит, если под капотом пыль и подтеки." },
+        { id: "lights", title: "Полировка фар", priceFrom: 6000, durationMin: 45, fit: "Подходит, если фары мутные и свет стал желтее." },
+        { id: "bitumen", title: "Удаление битума и смолы", priceFrom: 4000, durationMin: 30, fit: "Подходит, если по кузову черные точки после трассы." },
+        { id: "leather", title: "Уход за кожей", priceFrom: 5000, durationMin: 30, fit: "Подходит, если кожа сухая или светлеет на боковинах." },
+        { id: "rain", title: "Антидождь на стекла", priceFrom: 7000, durationMin: 40, fit: "Подходит, если вода плохо сходит на трассе." }
+      ],
+      occupied: [
+        { dayOffset: 0, start: "11:00", durationMin: 180 },
+        { dayOffset: 0, start: "16:30", durationMin: 120 },
+        { dayOffset: 1, start: "10:00", durationMin: 150 },
+        { dayOffset: 1, start: "14:00", durationMin: 90 },
+        { dayOffset: 2, start: "12:00", durationMin: 210 },
+        { dayOffset: 3, start: "15:00", durationMin: 180 },
+        { dayOffset: 4, start: "11:30", durationMin: 90 },
+        { dayOffset: 4, start: "18:00", durationMin: 120 },
+        { dayOffset: 5, start: "13:00", durationMin: 240 },
+        { dayOffset: 6, start: "10:30", durationMin: 150 }
+      ],
+      passes: [
+        { id: "month", title: "Раз в месяц", discount: 0.20, caption: "Регулярный уход каждый месяц" },
+        { id: "bimonth", title: "Раз в 2 месяца", discount: 0.12, caption: "Уход без жесткого графика" },
+        { id: "quarter", title: "Раз в квартал", discount: 0.08, caption: "Сезонный комплекс" }
+      ],
+      weekdayShort: ["вс", "пн", "вт", "ср", "чт", "пт", "сб"]
+    };
+    const state = { sizeId: CONFIG.sizes[0].id, packageId: CONFIG.packages[0].id, addons: new Set(), dayOffset: 0, time: null, passSizeId: CONFIG.sizes[0].id, viewStep: 1 };
+    var STEP_TITLES = ["Размер", "Пакет", "Допы", "Время", "Контакты"];
+
+    /* Переводит HH:MM в минуты от полуночи. */
+    function timeToMin(hhmm) { var p = hhmm.split(":"); return Number(p[0]) * 60 + Number(p[1]); }
+    /* Переводит минуты обратно в HH:MM. */
+    function minToTime(min) { return String(Math.floor(min / 60)).padStart(2, "0") + ":" + String(min % 60).padStart(2, "0"); }
+    /* Цена в тенге с пометкой от. */
+    function formatMoney(n) { return n.toLocaleString("ru-RU") + " \u20B8"; }
+    /* Длительность вида 2 ч 30 мин. */
+    function formatDuration(min) {
+      var h = Math.floor(min / 60), m = min % 60;
+      if (h && m) return h + " ч " + m + " мин";
+      if (h) return h + " ч";
+      return m + " мин";
+    }
+    /* Размер авто по id. */
+    function getSize(id) { return CONFIG.sizes.find(function (s) { return s.id === id; }); }
+    /* Выбранный пакет. */
+    function getPackage() { return CONFIG.packages.find(function (p) { return p.id === state.packageId; }); }
+    /* Ориентир цены: пакет плюс допы. */
+    function calcPrice() {
+      var sum = getPackage().priceFrom[state.sizeId];
+      CONFIG.addons.forEach(function (a) { if (state.addons.has(a.id)) sum += a.priceFrom; });
+      return sum;
+    }
+    /* Длительность визита. */
+    function calcDuration() {
+      var min = getPackage().durationMin[state.sizeId];
+      CONFIG.addons.forEach(function (a) { if (state.addons.has(a.id)) min += a.durationMin; });
+      return min;
+    }
+    /* Занятые интервалы дня. */
+    function occupiedRanges(dayOffset) {
+      return CONFIG.occupied.filter(function (o) { return o.dayOffset === dayOffset; }).map(function (o) {
+        var start = timeToMin(o.start); return { start: start, end: start + o.durationMin };
+      });
+    }
+    /* Пересечение интервалов. */
+    function overlaps(a1, a2, b1, b2) { return a1 < b2 && b1 < a2; }
+    /* Слоты: услуга успевает до закрытия и не пересекается с занятыми. */
+    function buildSlots(dayOffset, durationMin) {
+      var start = timeToMin(CONFIG.hours.start), end = timeToMin(CONFIG.hours.end), step = CONFIG.hours.slotStepMin;
+      var busy = occupiedRanges(dayOffset), now = new Date(), slots = [];
+      for (var t = start; t + durationMin <= end; t += step) {
+        var busyHit = busy.some(function (b) { return overlaps(t, t + durationMin, b.start, b.end); });
+        var past = dayOffset === 0 && t <= now.getHours() * 60 + now.getMinutes();
+        var reason = past ? "past" : (busyHit ? "busy" : "free");
+        slots.push({ time: minToTime(t), free: reason === "free", reason: reason });
+      }
+      return slots;
+    }
+    /* Дата сегодня плюс offset. */
+    function dateFromOffset(offset) { var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + offset); return d; }
+    /* Подпись дня. */
+    function dayLabel(offset) {
+      var d = dateFromOffset(offset);
+      var months = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+      var wd = CONFIG.weekdayShort[d.getDay()];
+      var tab = wd.charAt(0).toUpperCase() + wd.slice(1) + " " + d.getDate() + " " + months[d.getMonth()];
+      return { wd: wd, date: String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0"), tab: tab };
+    }
+    /* Иконка размера или пакета внутри карточки. */
+    function choiceArt(kind) {
+      var svg = {
+        sedan: '<svg width="64" height="28" viewBox="0 0 64 28" fill="none"><path d="M8 18h48M14 18l4-7h22l8 7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="18" cy="20" r="3" stroke="currentColor" stroke-width="1.8"/><circle cx="46" cy="20" r="3" stroke="currentColor" stroke-width="1.8"/></svg>',
+        crossover: '<svg width="64" height="32" viewBox="0 0 64 32" fill="none"><path d="M8 20h48M16 20l3-8h20l7 8" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 20v-4h6" stroke="currentColor" stroke-width="1.8"/><circle cx="20" cy="22" r="3.2" stroke="currentColor" stroke-width="1.8"/><circle cx="46" cy="22" r="3.2" stroke="currentColor" stroke-width="1.8"/></svg>',
+        suv: '<svg width="64" height="34" viewBox="0 0 64 34" fill="none"><path d="M6 22h52M12 22V12h28l8 10" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="18" cy="24" r="3.4" stroke="currentColor" stroke-width="1.8"/><circle cx="46" cy="24" r="3.4" stroke="currentColor" stroke-width="1.8"/></svg>',
+        minivan: '<svg width="68" height="32" viewBox="0 0 68 32" fill="none"><path d="M6 20h56M10 20V10h40l8 10" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M22 10v10M34 10v10" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="22" r="3" stroke="currentColor" stroke-width="1.8"/><circle cx="50" cy="22" r="3" stroke="currentColor" stroke-width="1.8"/></svg>',
+        complex: '<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M18 4v4M18 28v4M4 18h4M28 18h4M8 8l3 3M25 25l3 3M28 8l-3 3M11 25l-3 3" stroke="currentColor" stroke-width="1.6"/></svg>',
+        interior: '<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M8 24V14h8l3 4h9v6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 24h20" stroke="currentColor" stroke-width="1.8"/></svg>'
+      };
+      return '<span class="choice-art" aria-hidden="true">' + (svg[kind] || "") + "</span>";
+    }
+    /* Карточки размера. */
+    function renderSizes() {
+      var root = document.getElementById("sizeCards"); root.innerHTML = "";
+      CONFIG.sizes.forEach(function (s) {
+        var btn = document.createElement("button"); btn.type = "button";
+        btn.className = "choice" + (s.id === state.sizeId ? " is-selected" : "");
+        btn.innerHTML = choiceArt(s.id) + "<strong>" + s.title + "</strong><div class=\"muted\">Например: " + s.examples + "</div>";
+        btn.addEventListener("click", function () { state.sizeId = s.id; state.time = null; renderAll(); });
+        root.appendChild(btn);
+      });
+    }
+    /* Пакеты и состав. */
+    function renderPackages() {
+      var root = document.getElementById("packageCards");
+      var keepShown = !!root.querySelector(".choice.visible");
+      root.innerHTML = "";
+      CONFIG.packages.forEach(function (p) {
+        var btn = document.createElement("button"); btn.type = "button";
+        btn.className = "choice reveal" + (p.id === state.packageId ? " is-selected" : "");
+        if (keepShown) btn.classList.add("visible", "settled");
+        btn.innerHTML = choiceArt(p.id) + "<strong>" + p.title + "</strong><div class=\"price-from\">от " + formatMoney(p.priceFrom[state.sizeId]) + "</div><div class=\"muted\">~ " + formatDuration(p.durationMin[state.sizeId]) + "</div>";
+        btn.addEventListener("click", function () { state.packageId = p.id; state.time = null; renderAll(); });
+        root.appendChild(btn);
+      });
+      document.getElementById("packageIncludes").innerHTML = getPackage().includes.map(function (i) { return "<li>" + i + "</li>"; }).join("");
+    }
+    /* Допы вкл/выкл. */
+    function renderAddons() {
+      var root = document.getElementById("addonCards"); root.innerHTML = "";
+      CONFIG.addons.forEach(function (a) {
+        var on = state.addons.has(a.id);
+        var btn = document.createElement("button"); btn.type = "button";
+        btn.className = "addon" + (on ? " is-selected" : "");
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+        btn.innerHTML = "<div class=\"addon-top\"><strong>" + a.title + "</strong><span>от " + formatMoney(a.priceFrom) + "</span></div><div class=\"muted\">~ " + formatDuration(a.durationMin) + "</div><div class=\"addon-fit\">" + a.fit + "</div>";
+        btn.addEventListener("click", function () { if (on) state.addons.delete(a.id); else state.addons.add(a.id); state.time = null; renderAll(); });
+        root.appendChild(btn);
+      });
+    }
+    /* Семь дней и часы. */
+    function renderSchedule() {
+      var days = document.getElementById("dayChips"); days.innerHTML = "";
+      for (var i = 0; i < 7; i++) {
+        (function (i) {
+          var info = dayLabel(i), btn = document.createElement("button"); btn.type = "button";
+          btn.className = "chip" + (state.dayOffset === i ? " is-selected" : "");
+          btn.innerHTML = "<strong>" + info.tab + "</strong>";
+          btn.setAttribute("role", "tab");
+          btn.setAttribute("aria-selected", state.dayOffset === i ? "true" : "false");
+          btn.addEventListener("click", function () { state.dayOffset = i; state.time = null; renderAll(); });
+          days.appendChild(btn);
+        })(i);
+      }
+      var duration = calcDuration(), slots = buildSlots(state.dayOffset, duration), times = document.getElementById("timeChips");
+      times.innerHTML = "";
+      var freeCount = slots.filter(function (s) { return s.free; }).length;
+      document.getElementById("slotsHint").textContent = "Нужно " + formatDuration(duration) + ". Свободных окон: " + freeCount + ". Серые слоты заняты или уже прошли.";
+      slots.forEach(function (s) {
+        var btn = document.createElement("button"); btn.type = "button";
+        btn.className = "chip" + (state.time === s.time ? " is-selected" : "");
+        var note = s.reason === "busy" ? "занято" : (s.reason === "past" ? "прошло" : "свободно");
+        btn.innerHTML = "<strong>" + s.time + "</strong><small>" + note + "</small>";
+        btn.disabled = !s.free;
+        if (s.free) btn.addEventListener("click", function () {
+          state.time = s.time; renderTotals();
+          document.querySelectorAll("#timeChips .chip").forEach(function (c) { c.classList.remove("is-selected"); });
+          btn.classList.add("is-selected");
+        });
+        times.appendChild(btn);
+      });
+    }
+    /* Нижняя панель. */
+    function renderTotals() {
+      var price = "от " + formatMoney(calcPrice());
+      var meta = formatDuration(calcDuration()) + (state.time ? ", " + dayLabel(state.dayOffset).date + " в " + state.time : "");
+      document.getElementById("barPrice").textContent = price;
+      document.getElementById("barMeta").textContent = meta;
+      document.getElementById("sidePrice").textContent = price;
+      document.getElementById("sideMeta").textContent = meta;
+      paintActions();
+      updateStepper();
+    }
+    /* Кнопка записи серая, пока нет времени, имени и телефона. */
+    function paintActions() {
+      var ready = validate() === "";
+      [document.getElementById("submitBtn"), document.getElementById("barBtn"), document.getElementById("sideBtn")].forEach(function (b) {
+        b.classList.toggle("btn-primary", ready);
+        b.classList.toggle("btn-glow", ready);
+        b.classList.toggle("btn-wait", !ready);
+      });
+    }
+    /* Степпер: галочки у пройденных шагов и подпись текущего. */
+    function updateStepper() {
+      var done = [
+        !!state.sizeId,
+        !!state.packageId,
+        state.viewStep > 3 || !!state.time,
+        !!state.time,
+        validate() === ""
+      ];
+      var doneCount = done.filter(Boolean).length;
+      document.getElementById("progressFill").style.width = (doneCount / 5 * 100) + "%";
+      document.getElementById("stepKicker").textContent = "Шаг " + state.viewStep + " из 5 · " + STEP_TITLES[state.viewStep - 1];
+      document.querySelectorAll("#stepper li").forEach(function (li) {
+        var n = Number(li.getAttribute("data-step"));
+        li.classList.toggle("is-current", n === state.viewStep);
+        li.classList.toggle("is-done", done[n - 1] && n !== state.viewStep);
+        var dot = li.querySelector(".dot");
+        dot.textContent = done[n - 1] && n !== state.viewStep ? "✓" : String(n);
+      });
+    }
+    /* Абонемент. */
+    function renderPass() {
+      var sw = document.getElementById("passSizeSwitch"); sw.innerHTML = "";
+      CONFIG.sizes.forEach(function (s) {
+        var btn = document.createElement("button"); btn.type = "button";
+        btn.className = "chip" + (state.passSizeId === s.id ? " is-selected" : "");
+        btn.textContent = s.title;
+        btn.addEventListener("click", function () { state.passSizeId = s.id; renderPass(); });
+        sw.appendChild(btn);
+      });
+      var base = CONFIG.packages.find(function (p) { return p.id === "complex"; }).priceFrom[state.passSizeId];
+      var root = document.getElementById("passPlans"); root.innerHTML = "";
+      CONFIG.passes.forEach(function (p) {
+        var visit = Math.round(base * (1 - p.discount)), save = base - visit, el = document.createElement("article");
+        el.className = "plan";
+        el.innerHTML = "<div class=\"plan-save\">-" + Math.round(p.discount * 100) + "% за визит</div><h3>" + p.title + "</h3><div class=\"plan-price\">от " + formatMoney(visit) + "</div><div class=\"plan-old\">от " + formatMoney(base) + "</div><p class=\"muted\">Экономия от " + formatMoney(save) + " с заезда. " + p.caption + ".</p>";
+        root.appendChild(el);
+      });
+    }
+    /* Подвал. */
+    function renderFooter() {
+      document.getElementById("footerPhone").textContent = CONFIG.phoneDisplay;
+      document.getElementById("footerWhatsapp").innerHTML = "<a href=\"https://wa.me/" + CONFIG.whatsapp + "\">WhatsApp</a>";
+      document.getElementById("footerAddress").textContent = CONFIG.address;
+      document.getElementById("footerHours").textContent = CONFIG.hours.label;
+    }
+    /* Полный пересчет. */
+    function renderAll() { renderSizes(); renderPackages(); renderAddons(); renderSchedule(); renderTotals(); renderPass(); armAll(); }
+    /* Цифры телефона. */
+    function digitsOnly(str) { return (str || "").replace(/\D/g, ""); }
+    /* Проверка времени, имени, телефона. */
+    function validate() {
+      var name = document.getElementById("nameInput").value.trim();
+      var phone = digitsOnly(document.getElementById("phoneInput").value);
+      if (!state.time) return "Выберите свободное время.";
+      if (!name) return "Напишите имя.";
+      if (phone.length < 10) return "Телефон: не меньше 10 цифр.";
+      return "";
+    }
+    /* Заявка в WhatsApp. */
+    function openWhatsApp() {
+      var err = validate();
+      document.getElementById("formError").textContent = err;
+      if (err) { if (!document.getElementById("nameInput").value.trim()) document.getElementById("nameInput").focus(); else document.getElementById("phoneInput").focus(); return; }
+      var size = getSize(state.sizeId), pack = getPackage();
+      var addonTitles = CONFIG.addons.filter(function (a) { return state.addons.has(a.id); }).map(function (a) { return a.title; });
+      var day = dayLabel(state.dayOffset);
+      var lines = [
+        "Заявка в " + CONFIG.studioName + ", " + CONFIG.city,
+        "Имя: " + document.getElementById("nameInput").value.trim(),
+        "Телефон: " + document.getElementById("phoneInput").value.trim(),
+        "Авто: " + size.title + " (" + size.examples + ")",
+        "Пакет: " + pack.title,
+        addonTitles.length ? "Допы: " + addonTitles.join(", ") : "Допы: нет",
+        "Дата: " + day.date + " (" + day.wd + "), время " + state.time,
+        "Ориентир: от " + formatMoney(calcPrice()) + ", ~ " + formatDuration(calcDuration()),
+        "Итог подтвердит мастер после осмотра."
+      ];
+      window.open("https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
+    }
+    /* Мобильное меню. */
+    function setupMenu() {
+      var btn = document.getElementById("menuBtn"), nav = document.getElementById("mobile-nav");
+      btn.addEventListener("click", function () {
+        var open = nav.classList.toggle("is-open"); nav.hidden = !open; btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      nav.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () { nav.classList.remove("is-open"); nav.hidden = true; btn.setAttribute("aria-expanded", "false"); });
+      });
+    }
+    function onBookClick(scrollOnError) {
+      return function () {
+        var err = validate();
+        if (err) {
+          document.getElementById("formError").textContent = err;
+          if (scrollOnError) document.getElementById("prices").scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+        openWhatsApp();
+      };
+    }
+    document.getElementById("submitBtn").addEventListener("click", openWhatsApp);
+    document.getElementById("barBtn").addEventListener("click", onBookClick(true));
+    document.getElementById("sideBtn").addEventListener("click", onBookClick(true));
+    ["nameInput", "phoneInput"].forEach(function (id) {
+      document.getElementById(id).addEventListener("input", function () { paintActions(); updateStepper(); });
+    });
+    var stepIds = ["stepSize", "stepPack", "stepAdd", "stepWhen", "stepContact"];
+    document.querySelectorAll("#stepper button").forEach(function (btn, index) {
+      btn.addEventListener("click", function () {
+        document.getElementById(stepIds[index]).scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+    document.querySelectorAll(".acc-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var acc = btn.parentElement;
+        var open = acc.classList.toggle("is-open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    });
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var revealObs = null;
+    function armReveal(el) {
+      if (el.dataset.armed) return;
+      el.dataset.armed = "1";
+      if (reduceMotion) { el.classList.add("visible", "settled"); return; }
+      el.addEventListener("transitionend", function (e) {
+        if (e.target !== el || e.propertyName !== "opacity") return;
+        el.style.willChange = "auto";
+        el.classList.add("settled");
+      });
+      revealObs.observe(el);
+    }
+    function armAll(root) {
+      (root || document).querySelectorAll(".reveal").forEach(armReveal);
+    }
+    if (!reduceMotion) {
+      revealObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          var el = en.target;
+          var on = en.isIntersecting;
+          if (el.classList.contains("visible") === on) return;
+          el.style.willChange = "transform, opacity";
+          el.classList.remove("settled");
+          el.classList.toggle("visible", on);
+        });
+      }, { threshold: 0.15 });
+    }
+    var stepObs = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (en) { return en.isIntersecting; }).sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
+      if (!visible) return;
+      state.viewStep = Number(visible.target.getAttribute("data-step"));
+      updateStepper();
+    }, { rootMargin: "-20% 0px -55% 0px", threshold: [0.2, 0.6] });
+    document.querySelectorAll(".step").forEach(function (el) { stepObs.observe(el); });
+    /* Счётчики из CONFIG и лёгкий сдвиг карточек за курсором. Логику записи не трогает. */
+    (function setupMotion() {
+      var hours = (timeToMin(CONFIG.hours.end) - timeToMin(CONFIG.hours.start)) / 60;
+      var off = Math.round(Math.max.apply(null, CONFIG.passes.map(function (p) { return p.discount; })) * 100);
+      var values = { hours: hours, days: 7, off: off };
+      document.querySelectorAll(".count").forEach(function (el) {
+        var key = el.getAttribute("data-key");
+        if (values[key] == null) return;
+        el.setAttribute("data-count", String(values[key]));
+        el.style.setProperty("--num", String(values[key]));
+        el.setAttribute("aria-label", String(values[key]));
+        if (reduceMotion) {
+          el.textContent = String(values[key]);
+          el.classList.add("plain");
+        } else {
+          el.textContent = "";
+        }
+      });
+      if (!reduceMotion) {
+        var countObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            var el = en.target;
+            if (en.isIntersecting) {
+              el.style.willChange = "transform";
+              el.classList.add("is-counting");
+            } else {
+              el.classList.remove("is-counting");
+              el.style.willChange = "auto";
+            }
+          });
+        }, { threshold: 0.15 });
+        document.querySelectorAll(".count").forEach(function (el) {
+          el.addEventListener("animationend", function (e) {
+            if (e.target !== el) return;
+            el.style.willChange = "auto";
+          });
+          countObs.observe(el);
+        });
+        var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        if (fine) {
+          var lastTilt = null;
+          document.addEventListener("pointermove", function (e) {
+            var card = e.target.closest ? e.target.closest(".choice, .addon, .plan, .why-item, .photo-ph") : null;
+            if (lastTilt && lastTilt !== card) {
+              lastTilt.style.setProperty("--mx", "0px");
+              lastTilt.style.setProperty("--my", "0px");
+            }
+            lastTilt = card;
+            if (!card) return;
+            var r = card.getBoundingClientRect();
+            var x = (e.clientX - r.left) / r.width - 0.5;
+            var y = (e.clientY - r.top) / r.height - 0.5;
+            card.style.setProperty("--mx", (x * 10).toFixed(2) + "px");
+            card.style.setProperty("--my", (y * 8).toFixed(2) + "px");
+          });
+        }
+      }
+    })();
+    setupMenu(); renderFooter(); renderAll();
+  </script>
+</body>
+</html>
