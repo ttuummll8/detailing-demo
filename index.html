@@ -191,7 +191,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; --reveal-y: 0px; --reveal-s: 1; transition: none; will-change: auto; }
-      .count.is-counting { animation: none; }
+      .stat-xl .count.is-counting { animation: none; }
       .acc-panel, .btn, .choice, .addon, .chip, .progress > span, .plan, .why-item, .photo-ph { transition: none; }
       section + section::before { animation: none; }
     }
@@ -202,14 +202,8 @@
     .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 22px 0 8px; }
     .facts p { margin: 0; background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
     .facts .count { display: block; font-family: Unbounded, system-ui, sans-serif; font-size: clamp(28px, 4vw, 42px); line-height: 1; color: var(--text); }
-    @property --n { syntax: "<integer>"; inherits: false; initial-value: 0; }
-    .count { --n: 0; --num: 0; counter-reset: stat var(--n); }
-    .count::before { content: counter(stat); }
-    .count.is-counting { animation: countUp 1.2s ease-out forwards; }
     .stat-xl .count { display: inline-block; transform-origin: center left; }
-    .stat-xl .count.is-counting { animation: countUp 1.2s ease-out forwards, metalPulse 1.2s ease; }
-    .count.plain::before { content: none; }
-    @keyframes countUp { from { --n: 0; } to { --n: var(--num); } }
+    .stat-xl .count.is-counting { animation: metalPulse 1.35s ease; }
     @keyframes metalPulse { 0% { transform: scale(1) rotate(0deg); } 35% { transform: scale(1.06) rotate(-1.2deg); } 70% { transform: scale(.98) rotate(.6deg); } 100% { transform: scale(1) rotate(0deg); } }
     .facts small { color: var(--muted); font-size: .75rem; }
     .split { display: grid; gap: 28px; align-items: end; }
@@ -237,15 +231,22 @@
     section + section::before {
       content: "";
       position: absolute;
-      top: 0; left: 8%; right: 8%;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(192,192,192,.9), transparent);
-      background-size: 28% 100%;
-      background-repeat: no-repeat;
-      animation: sweep 3.2s ease-in-out infinite;
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+      animation: slide 3s linear infinite;
     }
-    section.band-light::before { background-image: linear-gradient(90deg, transparent, rgba(0,0,0,.45), transparent); }
-    @keyframes sweep { from { background-position: -20% 0; } to { background-position: 120% 0; } }
+    section.band-light::before { background: linear-gradient(90deg, transparent, rgba(0,0,0,.45), transparent); }
+    @keyframes slide {
+      0% { transform: translateX(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateX(100%); opacity: 0; }
+    }
     @media (min-width: 720px) {
       .nav { display: flex; }
       .menu-toggle { display: none; }
@@ -830,39 +831,53 @@
       var hours = (timeToMin(CONFIG.hours.end) - timeToMin(CONFIG.hours.start)) / 60;
       var off = Math.round(Math.max.apply(null, CONFIG.passes.map(function (p) { return p.discount; })) * 100);
       var values = { hours: hours, days: 7, off: off };
+      var countFrame = new WeakMap();
+      function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+      function stopCount(el) {
+        var frame = countFrame.get(el);
+        if (frame) cancelAnimationFrame(frame);
+        countFrame.delete(el);
+        el.classList.remove("is-counting");
+        el.style.willChange = "auto";
+        el.textContent = "0";
+      }
+      function runCount(el) {
+        stopCount(el);
+        var startValue = 0;
+        var endValue = Number(el.getAttribute("data-count")) || 0;
+        var duration = 1350;
+        var started = performance.now();
+        el.textContent = "0";
+        el.style.willChange = "transform";
+        el.classList.add("is-counting");
+        function frame(now) {
+          var progress = easeOutCubic(Math.min(1, (now - started) / duration));
+          var currentValue = Math.round(startValue + (endValue - startValue) * progress);
+          el.textContent = String(currentValue);
+          if (progress < 1) countFrame.set(el, requestAnimationFrame(frame));
+          else {
+            countFrame.delete(el);
+            el.textContent = String(endValue);
+            el.style.willChange = "auto";
+          }
+        }
+        countFrame.set(el, requestAnimationFrame(frame));
+      }
       document.querySelectorAll(".count").forEach(function (el) {
         var key = el.getAttribute("data-key");
         if (values[key] == null) return;
         el.setAttribute("data-count", String(values[key]));
-        el.style.setProperty("--num", String(values[key]));
         el.setAttribute("aria-label", String(values[key]));
-        if (reduceMotion) {
-          el.textContent = String(values[key]);
-          el.classList.add("plain");
-        } else {
-          el.textContent = "";
-        }
+        el.textContent = reduceMotion ? String(values[key]) : "0";
       });
       if (!reduceMotion) {
         var countObs = new IntersectionObserver(function (entries) {
           entries.forEach(function (en) {
-            var el = en.target;
-            if (en.isIntersecting) {
-              el.style.willChange = "transform";
-              el.classList.add("is-counting");
-            } else {
-              el.classList.remove("is-counting");
-              el.style.willChange = "auto";
-            }
+            if (en.isIntersecting) runCount(en.target);
+            else stopCount(en.target);
           });
         }, { threshold: 0.15 });
-        document.querySelectorAll(".count").forEach(function (el) {
-          el.addEventListener("animationend", function (e) {
-            if (e.target !== el) return;
-            el.style.willChange = "auto";
-          });
-          countObs.observe(el);
-        });
+        document.querySelectorAll(".count").forEach(function (el) { countObs.observe(el); });
         var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
         if (fine) {
           var lastTilt = null;
